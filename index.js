@@ -37,7 +37,7 @@ module.exports = function createStorage(initialState) {
     const listeners = currentListeners.slice();
     for (let i = 0; i < listeners.length; i++) {
       // callback is provided with prevState and currentState
-      listeners[i](prevState, currentState);
+      listeners[i](currentState, prevState);
     }
   }
 

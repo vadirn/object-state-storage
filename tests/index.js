@@ -248,7 +248,7 @@ describe('ObjectStateStorage', () => {
     const store = createStorage({ foo: 'bar' });
 
     const state = store.getState();
-    const unsubscribe = store.subscribe((prevState, curState) => {
+    const unsubscribe = store.subscribe((curState, prevState) => {
       expect(prevState).to.deep.equal(state);
       expect(curState).to.deep.equal(store.getState());
       unsubscribe();
