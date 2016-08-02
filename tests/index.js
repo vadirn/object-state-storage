@@ -256,4 +256,11 @@ describe('ObjectStateStorage', () => {
 
     store.setState({ bar: 'foo' });
   });
+
+  it('resetState() replaces the state, instead of updating it', () => {
+    const store = createStorage({ foo: 'bar' });
+    store.resetState({ bar: 'foo' });
+    expect(store.getState().foo).to.be.an('undefined');
+    expect(store.getState().bar).to.equal('foo');
+  });
 });
