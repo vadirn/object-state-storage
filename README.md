@@ -10,19 +10,21 @@ Example:
 
 const createStore = require('object-state-storage');
 
-// create a storage unit with initial value { foo: 'bar' } 
+// create a storage unit with initial value { foo: 'bar' }
 const store = createStore({ foo: 'bar' });
 
 // subscribe to store updates
-const unsubscribe = store.subscribe((prevState, curState) => {
+const unsubscribe = store.subscribe((curState, prevState) => {
   // log previous state and current state
-  console.log(prevState, curState);
+  console.log(curState, prevState);
   // unsubscribe
   unsubscribe();
 });
 
 // update the state
 store.setState({ bar: 'foo' });
+
+store.resetState({ foobar: 'foobar' });
 
 // log current state after store was updated
 // expect the following object to be in console.log

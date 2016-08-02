@@ -41,6 +41,22 @@ module.exports = function createStorage(initialState) {
     }
   }
 
+  // instead of Object.assign currentState,
+  // completely replases the state
+  function resetState(state) {
+    const prevState = Object.assign({}, currentState);
+    currentState = Object.assign({}, state);
+
+    // make sure to iterate through copy of currentListeners
+    // this makes state mutations work inside subscriptions
+    currentListeners = nextListeners;
+    const listeners = currentListeners.slice();
+    for (let i = 0; i < listeners.length; i++) {
+      // callback is provided with prevState and currentState
+      listeners[i](currentState, prevState);
+    }
+  }
+
   // This is a change listener
   // All subscriptions, that are registered before current 'set()' invokation
   // are called
@@ -73,6 +89,7 @@ module.exports = function createStorage(initialState) {
   return {
     getState,
     setState,
+    resetState,
     subscribe,
   };
 };
