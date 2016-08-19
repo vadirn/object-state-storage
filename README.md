@@ -8,10 +8,10 @@ Install with `npm install --save object-state-storage` command.
 Example:
 ```javascript
 
-const { createStore } = require('object-state-storage');
+const { createStorage } = require('object-state-storage');
 
 // create a storage unit with initial value { foo: 'bar' }
-const store = createStore({ foo: 'bar' });
+const store = createStorage({ foo: 'bar' });
 
 // subscribe to store updates
 const unsubscribe = store.subscribe((curState, prevState) => {
