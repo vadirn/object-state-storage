@@ -1,3 +1,5 @@
+const { clone, merge } = require('./lib/object-methods');
+
 // Extracted from https://github.com/reactjs/redux
 // No actions / dispatches / etc.
 // Just an object with subscription to its content updates
@@ -5,7 +7,7 @@
 // ATTENTION: be very careful when updating state from listener. This may lead to infinite recursion
 // (maximum call stack size exceeded)
 
-module.exports = function createStorage(initialState) {
+const createStorage = (initialState) => {
   let currentState = initialState;
   let currentListeners = [];
   let nextListeners = currentListeners;
@@ -21,15 +23,15 @@ module.exports = function createStorage(initialState) {
 
   function getState() {
     // return current copy of currentState
-    return Object.assign({}, currentState);
+    return clone(currentState);
   }
 
   // make snapshot of listeners and invoke those
   function setState(state) {
     // create a copy of current state
-    const prevState = Object.assign({}, currentState);
+    const prevState = clone(currentState);
     // update current state
-    currentState = Object.assign({}, currentState, state);
+    currentState = merge(currentState, state);
 
     // make sure to iterate through copy of currentListeners
     // this makes state mutations work inside subscriptions
@@ -44,8 +46,8 @@ module.exports = function createStorage(initialState) {
   // instead of Object.assign currentState,
   // completely replases the state
   function resetState(state) {
-    const prevState = Object.assign({}, currentState);
-    currentState = Object.assign({}, state);
+    const prevState = clone(currentState);
+    currentState = clone(state);
 
     // make sure to iterate through copy of currentListeners
     // this makes state mutations work inside subscriptions
@@ -92,4 +94,10 @@ module.exports = function createStorage(initialState) {
     resetState,
     subscribe,
   };
+};
+
+module.exports = {
+  createStorage,
+  clone,
+  merge,
 };

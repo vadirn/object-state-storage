@@ -3,9 +3,9 @@ const chai = require('chai');
 const { expect } = chai;
 const { spy } = require('sinon');
 
-const createStorage = require('../index.js');
+const { createStorage } = require('../index.js');
 
-describe('ObjectStateStorage', () => {
+describe('object-state-storage', () => {
   it('stores the initial state', () => {
     const store = createStorage({ hello: 'world!' });
 

@@ -8,7 +8,7 @@ Install with `npm install --save object-state-storage` command.
 Example:
 ```javascript
 
-const createStore = require('object-state-storage');
+const { createStore } = require('object-state-storage');
 
 // create a storage unit with initial value { foo: 'bar' }
 const store = createStore({ foo: 'bar' });
@@ -35,3 +35,6 @@ store.resetState({ foobar: 'foobar' });
 console.log(store.getState());
 
 ```
+
+`store.setState(update)` deeply merges current state and update. It also uses `JSON.parse(JSON.stringify())` to clone objects.
+You can reuse those functions: `const { clone, merge } = require('object-state-storage')`.
