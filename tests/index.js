@@ -263,4 +263,10 @@ describe('object-state-storage', () => {
     expect(store.getState().foo).to.be.an('undefined');
     expect(store.getState().bar).to.equal('foo');
   });
+
+  it('if value is array, it should be replaced', () => {
+    const store = createStorage({ foo: [1, 2, 3] });
+    store.setState({ foo: [1, 2] });
+    expect(store.getState().foo).to.deep.equal([1, 2]);
+  });
 });
