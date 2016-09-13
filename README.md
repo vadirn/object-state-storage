@@ -21,9 +21,9 @@ const unsubscribe = store.subscribe((curState, prevState) => {
   unsubscribe();
 });
 
-// update the state
+// update the state (merges current state and provided object)
 store.setState({ bar: 'foo' });
-
+// resets the state (replaces current state and provided object)
 store.resetState({ foobar: 'foobar' });
 
 // log current state after store was updated
@@ -36,5 +36,4 @@ console.log(store.getState());
 
 ```
 
-`store.setState(update)` deeply merges current state and update. It also uses `JSON.parse(JSON.stringify())` to clone objects.
-You can reuse those functions: `const { clone, merge } = require('object-state-storage')`.
+Extra functions: `const { clone, merge } = require('object-state-storage')`.
