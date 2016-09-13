@@ -1,6 +1,6 @@
 {
   "name": "object-state-storage",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Local state storage for javascript apps",
   "main": "index.js",
   "directories": {
