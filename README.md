@@ -1,17 +1,18 @@
-Object State Storage is a tiny state container.
+Object State Storage is a tiny state container written in es6.
 
 It is based on [Redux](https://github.com/reactjs/redux), but has no reducers and actions.
 You can also have as many storage units as you want.
 
-Install with `npm install --save object-state-storage` command.
+Install with `npm install --save object-state-storage` or `yarn add object-state-storage`.
 
 Example:
-```javascript
 
-const { createStorage } = require('object-state-storage');
+```javascript
+import ObjectStateStorage from 'object-state-storage';
+import { merge, clone } from 'object-state-storage';
 
 // create a storage unit with initial value { foo: 'bar' }
-const store = createStorage({ foo: 'bar' });
+const store = new ObjectStateStorage({ foo: 'bar' });
 
 // subscribe to store updates
 const unsubscribe = store.subscribe((curState, prevState) => {
@@ -32,8 +33,25 @@ store.resetState({ foobar: 'foobar' });
 //   foo: 'bar',
 //   bar: 'foo',
 // }
-console.log(store.getState());
+console.log(store.state);
+
+// immutable merge, used in setState:
+const mergeExample = { foo: 'bar' };
+const mergeResult = merge(mergeExample, { bar: 'foo' });
+
+// expect { foo: 'bar' }
+console.log(mergeExample);
+// expect { foo: 'bar', bar: 'foo' }
+console.log(mergeResult);
+
+// clone:
+const cloneExample = { foo: 'bar' };
+const cloneResult = clone(cloneExample);
+cloneExample.bar = 'foo';
+
+// expect { foo: 'bar', bar: 'foo' }
+console.log(cloneExample);
+// expect { foo: 'bar' }
+console.log(cloneResult);
 
 ```
-
-Extra functions: `const { clone, merge } = require('object-state-storage')`.

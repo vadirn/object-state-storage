@@ -1,80 +1,82 @@
-const { clone, merge } = require('./lib/object-methods');
+// utility function, tests if provided item is a key-value object and not an array
+const isObject = item => typeof item === 'object' && item !== null && !Array.isArray(item);
 
-// Extracted from https://github.com/reactjs/redux
-// No actions / dispatches / etc.
-// Just an object with subscription to its content updates
 
-// ATTENTION: be very careful when updating state from listener. This may lead to infinite recursion
-// (maximum call stack size exceeded)
+// utility function, clones key-value objects
+export const clone = (item) => JSON.parse(JSON.stringify(item));
 
-const createStorage = (initialState) => {
-  let currentState = initialState;
-  let currentListeners = [];
-  let nextListeners = currentListeners;
 
-  // create a copy of current listeners (this is actually a snapshot of nextListeners)
-  // if nextListeners and currentListeners are the same
-  // so that nextListeners mutations do not affect currentListeners
-  function ensureCanMutateNextListeners() {
-    if (nextListeners === currentListeners) {
-      nextListeners = currentListeners.slice();
+// utility function, recursively merges key-value objects
+export const merge = (to, from) => {
+  const result = clone(to);
+  const changes = clone(from);
+
+  Object.keys(changes).forEach((key) => {
+    const value = changes[key];
+
+    if (isObject(value) && isObject(result[key])) {
+      // go deeper if both sides are objects
+      result[key] = merge(result[key], changes[key]);
+    } else {
+      // can set value of the result
+      result[key] = changes[key];
+    }
+  });
+
+  return result;
+};
+
+
+// store with subscriptions
+export default class ObjectStateStorage {
+  constructor(initialState) {
+    this._currentState = initialState;
+    this._currentListeners = [];
+    this._nextListeners = [];
+
+    // binds
+    this.setState = this.setState.bind(this);
+    this.resetState = this.resetState.bind(this);
+    this.subscribe = this.subscribe.bind(this);
+  }
+  setState(update) {
+    // prvious state is passed to listener
+    const prevState = this.state;
+    // apply update to currentState
+    this._currentState = merge(this._currentState, update);
+
+    // update currentListeners
+    this._currentListeners = this._nextListeners.slice();
+    // iterate through currentListeners
+    for (const listener of this._currentListeners) {
+      listener(this.state, prevState);
     }
   }
+  resetState(newState) {
+    // completely replace state
+    const prevState = this.state;
+    this._currentState = clone(newState);
 
-  function getState() {
-    // return current copy of currentState
-    return clone(currentState);
-  }
-
-  // make snapshot of listeners and invoke those
-  function setState(state) {
-    // create a copy of current state
-    const prevState = clone(currentState);
-    // update current state
-    currentState = merge(currentState, state);
-
-    // make sure to iterate through copy of currentListeners
-    // this makes state mutations work inside subscriptions
-    currentListeners = nextListeners;
-    const listeners = currentListeners.slice();
-    for (let i = 0; i < listeners.length; i++) {
-      // callback is provided with prevState and currentState
-      listeners[i](currentState, prevState);
+    // update currentListeners
+    this._currentListeners = this._nextListeners.slice();
+    // iterate through currentListeners
+    for (const listener of this._currentListeners) {
+      listener(this.state, prevState);
     }
   }
-
-  // instead of Object.assign currentState,
-  // completely replases the state
-  function resetState(state) {
-    const prevState = clone(currentState);
-    currentState = clone(state);
-
-    // make sure to iterate through copy of currentListeners
-    // this makes state mutations work inside subscriptions
-    currentListeners = nextListeners;
-    const listeners = currentListeners.slice();
-    for (let i = 0; i < listeners.length; i++) {
-      // callback is provided with prevState and currentState
-      listeners[i](currentState, prevState);
-    }
-  }
-
-  // This is a change listener
-  // All subscriptions, that are registered before current 'set()' invokation
-  // are called
-  // Subscriptions, that are registered during or after current 'set()' invokation
-  // will be called with next 'set()'
-  function subscribe(listener) {
+  subscribe(listener) {
     if (typeof listener !== 'function') {
       throw new Error('Expected listener to be a function.');
     }
 
+    // flag to prevent multiple unsubscribe calls
     let isSubscribed = true;
 
-    ensureCanMutateNextListeners();
-    nextListeners.push(listener);
+    // add listener to the list
+    this._nextListeners.push(listener);
 
-    return function unsubscribe() {
+    // unsubscribe function
+    return () => {
       // remove listener only once
       if (!isSubscribed) {
         return;
@@ -82,22 +84,13 @@ const createStorage = (initialState) => {
 
       isSubscribed = false;
 
-      ensureCanMutateNextListeners();
-      const index = nextListeners.indexOf(listener);
-      nextListeners.splice(index, 1);
+      // remove listener from the list
+      const index = this._nextListeners.indexOf(listener);
+      this._nextListeners.splice(index, 1);
     };
   }
-
-  return {
-    getState,
-    setState,
-    resetState,
-    subscribe,
-  };
-};
-
-module.exports = {
-  createStorage,
-  clone,
-  merge,
-};
+  get state() {
+    // return copy of currentState
+    return clone(this._currentState);
+  }
+}
