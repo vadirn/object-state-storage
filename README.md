@@ -23,9 +23,8 @@ const unsubscribe = store.subscribe((curState, prevState) => {
 });
 
 // update the state (merges current state and provided object)
+// expect to see in console { foo: 'bar' } and { foo: 'bar', bar: 'foo' }
 store.setState({ bar: 'foo' });
-// resets the state (replaces current state and provided object)
-store.resetState({ foobar: 'foobar' });
 
 // log current state after store was updated
 // expect the following object to be in console.log
@@ -33,6 +32,12 @@ store.resetState({ foobar: 'foobar' });
 //   foo: 'bar',
 //   bar: 'foo',
 // }
+console.log(store.state);
+
+// resets the state (replaces current state and provided object)
+store.resetState({ foobar: 'foobar' });
+
+// expect to see { foobar: 'foobar' } in console
 console.log(store.state);
 
 // immutable merge, used in setState:
