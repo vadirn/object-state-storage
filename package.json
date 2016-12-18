@@ -1,6 +1,6 @@
 {
   "name": "object-state-storage",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Local state storage for javascript apps",
   "main": "index.js",
   "scripts": {
@@ -22,13 +22,6 @@
   "homepage": "https://github.com/vadirn/object-state-storage#readme",
   "dependencies": {},
   "devDependencies": {
-    "babel-core": "6.18.2",
-    "babel-loader": "6.2.8",
-    "babel-plugin-react-require": "3.0.0",
-    "babel-polyfill": "6.16.0",
-    "babel-preset-es2015": "6.18.0",
-    "babel-preset-react": "6.16.0",
-    "babel-preset-stage-2": "6.18.0",
     "eslint": "3.11.1",
     "eslint-config-airbnb": "13.0.0",
     "eslint-plugin-import": "2.2.0",

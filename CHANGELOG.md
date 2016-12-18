@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.2
+- Remove .babelrc and babel-related deps
+
 ## 2.0.0
 - Use jest for tests
 - Rewrite ObjectStateStorage as es6 class
