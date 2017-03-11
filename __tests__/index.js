@@ -1,4 +1,4 @@
-import ObjectStateStorage from '../index.js';
+import ObjectStateStorage from '../index';
 
 describe('object-state-storage', () => {
   it('stores the initial state', () => {
@@ -112,19 +112,19 @@ describe('object-state-storage', () => {
   it('delays unsubscribe to the next state mutation', () => {
     const store = new ObjectStateStorage({ foo: 'bar' });
     const unsubscribeHandles = [];
-    const doUnsubscribeAll = () => unsubscribeHandles.forEach(
-      unsubscribe => unsubscribe()
-    );
+    const doUnsubscribeAll = () => unsubscribeHandles.forEach(unsubscribe => unsubscribe());
 
     const listenerA = jest.fn();
     const listenerB = jest.fn();
     const listenerC = jest.fn();
 
     unsubscribeHandles.push(store.subscribe(() => listenerA()));
-    unsubscribeHandles.push(store.subscribe(() => {
-      listenerB();
-      doUnsubscribeAll();
-    }));
+    unsubscribeHandles.push(
+      store.subscribe(() => {
+        listenerB();
+        doUnsubscribeAll();
+      })
+    );
     unsubscribeHandles.push(store.subscribe(() => listenerC()));
 
     store.setState({ foo: 'bar' });
@@ -274,14 +274,13 @@ describe('object-state-storage', () => {
         },
       },
     });
-    expect(store.state)
-      .toEqual({
-        userData: {
-          submitPayload: {
-            aZg7gFGB: ['option-1', 'option-2'],
-          },
+    expect(store.state).toEqual({
+      userData: {
+        submitPayload: {
+          aZg7gFGB: ['option-1', 'option-2'],
         },
-      });
+      },
+    });
     store.setState({
       userData: {
         submitPayload: {
@@ -289,13 +288,12 @@ describe('object-state-storage', () => {
         },
       },
     });
-    expect(store.state)
-      .toEqual({
-        userData: {
-          submitPayload: {
-            aZg7gFGB: ['option-1'],
-          },
+    expect(store.state).toEqual({
+      userData: {
+        submitPayload: {
+          aZg7gFGB: ['option-1'],
         },
-      });
+      },
+    });
   });
 });

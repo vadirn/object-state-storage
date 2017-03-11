@@ -1,17 +1,30 @@
 // utility function, tests if provided item is a key-value object and not an array
 const isObject = item => typeof item === 'object' && item !== null && !Array.isArray(item);
 
-
 // utility function, clones key-value objects
-export const clone = (item) => JSON.parse(JSON.stringify(item));
-
+export const clone = item => {
+  // JSON.parse(JSON.stringify(item))
+  return Object.keys(item).reduce(
+    (accum, key) => {
+      if (isObject(item[key])) {
+        accum[key] = clone(item[key]);
+      } else if (Array.isArray(item[key])) {
+        accum[key] = item[key].slice();
+      } else {
+        accum[key] = item[key];
+      }
+      return accum;
+    },
+    {}
+  );
+};
 
 // utility function, recursively merges key-value objects
 export const merge = (to, from) => {
   const result = clone(to);
   const changes = clone(from);
 
-  Object.keys(changes).forEach((key) => {
+  Object.keys(changes).forEach(key => {
     const value = changes[key];
 
     if (isObject(value) && isObject(result[key])) {
@@ -25,7 +38,6 @@ export const merge = (to, from) => {
 
   return result;
 };
-
 
 // store with subscriptions
 export default class ObjectStateStorage {
