@@ -296,4 +296,32 @@ describe('object-state-storage', () => {
       },
     });
   });
+
+  it('setState can take function as argument', () => {
+    const a = {
+      a: 'a',
+    };
+    const b = state => {
+      return { b: state.a };
+    };
+    const store = new ObjectStateStorage(a);
+
+    store.setState(b);
+
+    expect(store.state).toEqual({ a: 'a', b: 'a' });
+  });
+
+  it('resetState can take function as argument', () => {
+    const a = {
+      a: 'a',
+    };
+    const b = state => {
+      return { b: state.a };
+    };
+    const store = new ObjectStateStorage(a);
+
+    store.resetState(b);
+
+    expect(store.state).toEqual({ b: 'a' });
+  });
 });

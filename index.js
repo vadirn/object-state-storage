@@ -3,12 +3,18 @@ export const isObject = item => typeof item === 'object' && item !== null && !Ar
 
 // utility function, clones key-value objects
 export const clone = item => {
-  return { ...item };
+  if (isObject(item)) {
+    return { ...item };
+  }
+  return {};
 };
 
 // utility function, recursively merges key-value objects
 export const merge = (target, modification) => {
-  return { ...target, ...modification };
+  if (isObject(modification)) {
+    return { ...target, ...modification };
+  }
+  return { ...target };
 };
 
 // store with subscriptions
@@ -23,11 +29,16 @@ export default class ObjectStateStorage {
     this.resetState = this.resetState.bind(this);
     this.subscribe = this.subscribe.bind(this);
   }
-  setState(update) {
+  setState(modification) {
     // prvious state is passed to listener
     const prevState = this.state;
-    // apply update to currentState
-    this._currentState = merge(this._currentState, update);
+
+    if (typeof modification === 'function') {
+      // apply update to currentState
+      this._currentState = merge(this._currentState, modification(prevState));
+    } else {
+      this._currentState = merge(this._currentState, modification);
+    }
 
     // update currentListeners
     this._currentListeners = this._nextListeners.slice();
@@ -39,7 +50,13 @@ export default class ObjectStateStorage {
   resetState(newState) {
     // completely replace state
     const prevState = this.state;
-    this._currentState = clone(newState);
+
+    if (typeof newState === 'function') {
+      // apply update to currentState
+      this._currentState = clone(newState(prevState));
+    } else {
+      this._currentState = clone(newState);
+    }
 
     // update currentListeners
     this._currentListeners = this._nextListeners.slice();
