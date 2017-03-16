@@ -1,7 +1,7 @@
 import { merge } from '../index';
 
-describe('object-methods', () => {
-  it('merge doesn`t mutate target', () => {
+describe('merge', () => {
+  it('does not mutate arguments', () => {
     const mutable = { foo: 'bar' };
     const target = { test: mutable };
     const result = merge(target, { test: { foo: 'foo' } });
@@ -10,11 +10,22 @@ describe('object-methods', () => {
     expect(result).toEqual({ test: { foo: 'foo' } });
   });
 
-  it('handles merging undefined values', () => {
-    const a = { a: undefined };
-    const b = { a: 'b' };
+  it('assinging undefined value does not change value', () => {
+    const a = { a: 'b' };
+    const b = { a: undefined };
     expect(merge(a, b)).toEqual({ a: 'b' });
-    expect(merge(b, a)).toEqual({ a: undefined });
+  });
+
+  it('assigning empty object keeps target value unchanged', () => {
+    const a = { a: { b: 'c' } };
+    const b = { a: {} };
+    expect(merge(a, b)).toEqual({ a: { b: 'c' } });
+  });
+
+  it('keeps unmodified values', () => {
+    const a = { a: { b: 'c', d: 'e' } };
+    const b = { a: { f: 'g' } };
+    expect(merge(a, b)).toEqual({ a: { b: 'c', d: 'e', f: 'g' } });
   });
 
   it('{a: "b"} merge {a: "c"} results in {a: "c"}', () => {

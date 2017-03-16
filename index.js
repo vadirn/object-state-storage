@@ -4,7 +4,7 @@ export const isObject = item => typeof item === 'object' && item !== null && !Ar
 // utility function, clones key-value objects
 export const clone = item => {
   if (isObject(item)) {
-    return { ...item };
+    return JSON.parse(JSON.stringify(item));
   }
   return {};
 };
@@ -12,9 +12,22 @@ export const clone = item => {
 // utility function, recursively merges key-value objects
 export const merge = (target, modification) => {
   if (isObject(modification)) {
-    return { ...target, ...modification };
+    const runner = (target, modification) => {
+      return Object.keys(modification).reduce(
+        (accum, key) => {
+          if (isObject(modification[key]) && isObject(target[key])) {
+            accum[key] = runner(target[key], modification[key]);
+          } else if (modification[key] !== undefined) {
+            accum[key] = modification[key];
+          }
+          return accum;
+        },
+        target
+      );
+    };
+    return runner(clone(target), modification);
   }
-  return { ...target };
+  return clone(target);
 };
 
 // store with subscriptions

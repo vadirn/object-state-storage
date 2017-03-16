@@ -240,16 +240,16 @@ describe('object-state-storage', () => {
   });
 
   it('provides subscribers with previous and current state', () => {
-    const store = new ObjectStateStorage({ foo: 'bar' });
+    const store = new ObjectStateStorage({ foo: { bar: 'foo' } });
 
     const state = store.state;
     const unsubscribe = store.subscribe((curState, prevState) => {
-      expect(prevState).toEqual(state);
-      expect(curState).toEqual(store.state);
+      expect(prevState).toEqual({ foo: { bar: 'foo' } });
+      expect(curState).toEqual({ foo: { bar: 'bar' } });
       unsubscribe();
     });
 
-    store.setState({ bar: 'foo' });
+    store.setState({ foo: { bar: 'bar' } });
   });
 
   it('resetState() replaces the state, instead of updating it', () => {
