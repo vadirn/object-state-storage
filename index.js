@@ -10,22 +10,19 @@ export const clone = item => {
 };
 
 // utility function, recursively merges key-value objects
-export const merge = (target, modification) => {
-  if (isObject(modification)) {
-    const runner = (target, modification) => {
-      return Object.keys(modification).reduce(
-        (accum, key) => {
-          if (isObject(modification[key]) && isObject(target[key])) {
-            accum[key] = runner(target[key], modification[key]);
-          } else if (modification[key] !== undefined) {
-            accum[key] = modification[key];
-          }
-          return accum;
-        },
-        target
-      );
+export const merge = (target, modifier) => {
+  if (isObject(modifier)) {
+    const runner = (target, modifier) => {
+      return Object.keys(modifier).reduce((accum, key) => {
+        if (isObject(modifier[key]) && isObject(target[key])) {
+          accum[key] = runner(target[key], modifier[key]);
+        } else if (modifier[key] !== undefined) {
+          accum[key] = modifier[key];
+        }
+        return accum;
+      }, target);
     };
-    return runner(clone(target), modification);
+    return runner(clone(target), modifier);
   }
   return clone(target);
 };
@@ -42,15 +39,15 @@ export default class ObjectStateStorage {
     this.resetState = this.resetState.bind(this);
     this.subscribe = this.subscribe.bind(this);
   }
-  setState(modification) {
+  setState(modifier) {
     // prvious state is passed to listener
     const prevState = this.state;
 
-    if (typeof modification === 'function') {
+    if (typeof modifier === 'function') {
       // apply update to currentState
-      this._currentState = merge(this._currentState, modification(prevState));
+      this._currentState = merge(this._currentState, modifier(prevState));
     } else {
-      this._currentState = merge(this._currentState, modification);
+      this._currentState = merge(this._currentState, modifier);
     }
 
     // update currentListeners

@@ -37,6 +37,9 @@
       }
     }
   },
+  "extends": [
+    "plugin:jsx-a11y/recommended"
+  ],
   "rules": {
     "array-callback-return": "warn",
     "default-case": [
@@ -123,6 +126,7 @@
       "warn",
       {
         "vars": "local",
+        "ignoreRestSiblings": true,
         "varsIgnorePattern": "^_",
         "args": "after-used"
       }
@@ -184,10 +188,6 @@
     "react/react-in-jsx-scope": "error",
     "react/require-render-return": "warn",
     "react/style-prop-object": "warn",
-    "jsx-a11y/aria-role": "warn",
-    "jsx-a11y/img-has-alt": "warn",
-    "jsx-a11y/img-redundant-alt": "warn",
-    "jsx-a11y/no-access-key": "warn",
     "camelcase": "warn",
     "jsx-quotes": [
       "error",
@@ -229,7 +229,7 @@
       {
         "arrays": "always-multiline",
         "objects": "always-multiline",
-        "imports": "never",
+        "imports": "always-multiline",
         "exports": "never",
         "functions": "never"
       }
@@ -252,48 +252,6 @@
       "declaration",
       {
         "allowArrowFunctions": true
-      }
-    ],
-    "indent": [
-      "error",
-      2,
-      {
-        "SwitchCase": 1,
-        "VariableDeclarator": 1,
-        "outerIIFEBody": 1,
-        "FunctionDeclaration": {
-          "parameters": 1,
-          "body": 1
-        },
-        "FunctionExpression": {
-          "parameters": 1,
-          "body": 1
-        }
-      }
-    ],
-    "key-spacing": [
-      "error",
-      {
-        "beforeColon": false,
-        "afterColon": true
-      }
-    ],
-    "keyword-spacing": [
-      "error",
-      {
-        "before": true,
-        "after": true,
-        "overrides": {
-          "return": {
-            "after": true
-          },
-          "throw": {
-            "after": true
-          },
-          "case": {
-            "after": true
-          }
-        }
       }
     ],
     "line-comment-position": [
