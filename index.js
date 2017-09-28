@@ -39,7 +39,7 @@ export default class ObjectStateStorage {
     this.resetState = this.resetState.bind(this);
     this.subscribe = this.subscribe.bind(this);
   }
-  setState(modifier) {
+  setState(modifier, label) {
     // prvious state is passed to listener
     const prevState = this.state;
 
@@ -54,10 +54,10 @@ export default class ObjectStateStorage {
     this._currentListeners = this._nextListeners.slice();
     // iterate through currentListeners
     for (const listener of this._currentListeners) {
-      listener(this.state, prevState);
+      listener(this.state, prevState, label);
     }
   }
-  resetState(newState) {
+  resetState(newState, label) {
     // completely replace state
     const prevState = this.state;
 
@@ -72,7 +72,7 @@ export default class ObjectStateStorage {
     this._currentListeners = this._nextListeners.slice();
     // iterate through currentListeners
     for (const listener of this._currentListeners) {
-      listener(this.state, prevState);
+      listener(this.state, prevState, label);
     }
   }
   subscribe(listener) {

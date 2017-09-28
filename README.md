@@ -1,11 +1,18 @@
-Object State Storage is a tiny state container written in es6.
+**Object State Storage** is a tiny state container written in es6.
 
 It is based on [Redux](https://github.com/reactjs/redux), but has no reducers and actions.
 You can also have as many storage units as you want.
 
-Install with `npm install --save object-state-storage` or `yarn add object-state-storage`.
+Install with `npm install --save object-state-storage` or `yarn add object-state-storage`. Note that no compiled version is provided. So if you are using webpack and babel, you might want to explicitly include object-state-storage in babel-loader rule.
 
-Example:
+## API
+- `const store = new ObjectStateStorage([initialState: Object])` - create new storage with optional initial state.
+- `const unsubscribe = store.subscribe(listener: (currentState, prevState, label) => {})` - subscribe to state changes, returns unsubscribe function. `label` might be useful for debugging.
+- `store.setState(modifier: Object or ([currentState]) => Object, [label])` - recursively merges current state and modifier object. If modifier is a function, it might take currentState as an argument and return an Object, that is going to be merged into current state. Merge function can be reused: `import { merge } from 'object-state-storage'`.
+- `store.resetState(newState: Object or ([currentState]) => Object, [label])` - replaces current state with provided newState Object. If newState is a function, it might take currentState as an argument and return an Object, that is going to replace current state.
+- `store.state` - returns cloned state. Clone function is available via `import { clone } from 'object-state-storage'`
+
+## Example
 
 ```javascript
 import ObjectStateStorage from 'object-state-storage';
