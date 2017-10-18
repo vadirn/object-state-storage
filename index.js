@@ -6,6 +6,9 @@ export const clone = item => {
   if (isObject(item)) {
     return JSON.parse(JSON.stringify(item));
   }
+  if (console && console.warn) {
+    console.warn('Trying to clone non-object entity, empty object is returned');
+  }
   return {};
 };
 
