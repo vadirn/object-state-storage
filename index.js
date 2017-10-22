@@ -48,8 +48,15 @@ export default class ObjectStateStorage {
 
     if (typeof modifier === 'function') {
       // apply update to currentState
+      const modification = modifier(prevState);
+      if (modification === null || modification === undefined) {
+        return;
+      }
       this._currentState = merge(this._currentState, modifier(prevState));
     } else {
+      if (modifier === null || modifier === undefined) {
+        return;
+      }
       this._currentState = merge(this._currentState, modifier);
     }
 
@@ -66,8 +73,15 @@ export default class ObjectStateStorage {
 
     if (typeof newState === 'function') {
       // apply update to currentState
-      this._currentState = clone(newState(prevState));
+      const nextState = newState(prevState);
+      if (nextState === null || nextState === undefined) {
+        return;
+      }
+      this._currentState = clone(nextState);
     } else {
+      if (newState === null || newState === undefined) {
+        return;
+      }
       this._currentState = clone(newState);
     }
 

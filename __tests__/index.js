@@ -252,76 +252,100 @@ describe('object-state-storage', () => {
     store.setState({ foo: { bar: 'bar' } });
   });
 
-  it('resetState() replaces the state, instead of updating it', () => {
-    const store = new ObjectStateStorage({ foo: 'bar' });
-    store.resetState({ bar: 'foo' });
-    expect(store.state.foo).toBeUndefined();
-    expect(store.state.bar).toEqual('foo');
-  });
+  describe('resetState()', () => {
+    it('replaces the state, instead of updating it', () => {
+      const store = new ObjectStateStorage({ foo: 'bar' });
+      store.resetState({ bar: 'foo' });
+      expect(store.state.foo).toBeUndefined();
+      expect(store.state.bar).toEqual('foo');
+    });
+    it('can take function as argument', () => {
+      const a = {
+        a: 'a',
+      };
+      const b = state => {
+        return { b: state.a };
+      };
+      const store = new ObjectStateStorage(a);
 
-  it('if value is array, it should be replaced', () => {
-    const store = new ObjectStateStorage({
-      userData: {
-        submitPayload: {
-          aZg7gFGB: ['option-1'],
-        },
-      },
+      store.resetState(b);
+
+      expect(store.state).toEqual({ b: 'a' });
     });
-    store.setState({
-      userData: {
-        submitPayload: {
-          aZg7gFGB: ['option-1', 'option-2'],
-        },
-      },
-    });
-    expect(store.state).toEqual({
-      userData: {
-        submitPayload: {
-          aZg7gFGB: ['option-1', 'option-2'],
-        },
-      },
-    });
-    store.setState({
-      userData: {
-        submitPayload: {
-          aZg7gFGB: ['option-1'],
-        },
-      },
-    });
-    expect(store.state).toEqual({
-      userData: {
-        submitPayload: {
-          aZg7gFGB: ['option-1'],
-        },
-      },
+    it('does nothing if modification results in null or undefined', () => {
+      const store = new ObjectStateStorage({});
+      const sub = jest.fn();
+      store.subscribe(sub);
+      store.resetState(null);
+      store.resetState();
+      store.resetState(() => null);
+      expect(store.state).toEqual({});
+      expect(sub.mock.calls.length).toEqual(0);
     });
   });
 
-  it('setState can take function as argument', () => {
-    const a = {
-      a: 'a',
-    };
-    const b = state => {
-      return { b: state.a };
-    };
-    const store = new ObjectStateStorage(a);
+  describe('setState()', () => {
+    it('if value is array, it should be replaced', () => {
+      const store = new ObjectStateStorage({
+        userData: {
+          submitPayload: {
+            aZg7gFGB: ['option-1'],
+          },
+        },
+      });
+      store.setState({
+        userData: {
+          submitPayload: {
+            aZg7gFGB: ['option-1', 'option-2'],
+          },
+        },
+      });
+      expect(store.state).toEqual({
+        userData: {
+          submitPayload: {
+            aZg7gFGB: ['option-1', 'option-2'],
+          },
+        },
+      });
+      store.setState({
+        userData: {
+          submitPayload: {
+            aZg7gFGB: ['option-1'],
+          },
+        },
+      });
+      expect(store.state).toEqual({
+        userData: {
+          submitPayload: {
+            aZg7gFGB: ['option-1'],
+          },
+        },
+      });
+    });
 
-    store.setState(b);
+    it('can take function as argument', () => {
+      const a = {
+        a: 'a',
+      };
+      const b = state => {
+        return { b: state.a };
+      };
+      const store = new ObjectStateStorage(a);
 
-    expect(store.state).toEqual({ a: 'a', b: 'a' });
-  });
+      store.setState(b);
 
-  it('resetState can take function as argument', () => {
-    const a = {
-      a: 'a',
-    };
-    const b = state => {
-      return { b: state.a };
-    };
-    const store = new ObjectStateStorage(a);
+      expect(store.state).toEqual({ a: 'a', b: 'a' });
+    });
 
-    store.resetState(b);
-
-    expect(store.state).toEqual({ b: 'a' });
+    it('does nothing if modification results in null or undefined', () => {
+      const store = new ObjectStateStorage({});
+      const sub = jest.fn();
+      store.subscribe(sub);
+      store.setState(null);
+      store.setState();
+      store.setState(() => null);
+      expect(store.state).toEqual({});
+      expect(sub.mock.calls.length).toEqual(0);
+    });
   });
 });
