@@ -52,7 +52,7 @@ export default class ObjectStateStorage {
       if (modification === null || modification === undefined) {
         return;
       }
-      this._currentState = merge(this._currentState, modifier(prevState));
+      this._currentState = merge(this._currentState, modification);
     } else {
       if (modifier === null || modifier === undefined) {
         return;
